@@ -4,12 +4,27 @@ import  Icon  from 'react-native-vector-icons/Ionicons';
 import Ico from 'react-native-vector-icons/FontAwesome6';
 
 const Notification = () => {
+
+ const requestNotificationPermission = async () => {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+    } else {
+      console.log('Notification permission denied.');
+    }
+  } catch (error) {
+    console.error('Error requesting notification permission:', error);
+  }
+};
+
+
   return (
     <View style={styles.container}>
      <Icon name="notifications-off" size={50} color={'#e8962a'} />
      <Text style={styles.Title}>Notification Settings</Text>
      <Text style={styles.para}>Subscribe to receive important notifications about classes, exams, and events directly on your device.</Text>
-     <TouchableOpacity style={styles.Button}>
+     <TouchableOpacity onPress={requestNotificationPermission} style={styles.Button}>
       <Ico name="mobile-screen-button" size={25} color={'#f0f0f0'} />
       <Text style={styles.buttonText}>Enable Notifications</Text>
      </TouchableOpacity>

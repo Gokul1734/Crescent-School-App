@@ -1,12 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useEffect } from 'react';
+import { Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { View, Text, Animated, StyleSheet, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const CustomSidebar = (props) => {
-  const translateX = useRef(new Animated.Value(-250)).current; // Sidebar hidden initially
-  
+  const translateX = useRef(new Animated.Value(240)).current; // Sidebar hidden initially
+  const navigation = useNavigation();
   // Use useEffect to respond to props.var changes
   useEffect(() => {
     Animated.timing(translateX, {
@@ -16,11 +19,22 @@ const CustomSidebar = (props) => {
     }).start();
   }, [props.var, translateX]); // Run effect when props.var changes
 
+
+const handleLogout = async () => {
+  try {
+    await AsyncStorage.clear(); // Clear AsyncStorage
+    navigation.replace('Login'); // Navigate to Login (replace avoids going back)
+  } catch (error) {
+    console.log('Error logging out:', error);
+  }
+};
+
+
   return (
     <View style={styles.container}>
       {/* Sidebar */}
       <Animated.View style={[styles.sidebar, { transform: [{ translateX }] }]}>
-        <TouchableOpacity style={{
+        <TouchableOpacity onPress={handleLogout} style={{
          backgroundColor: 'gray',
          borderRadius : 10,
          justifyContent: 'center',

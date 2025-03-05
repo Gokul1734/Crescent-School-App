@@ -1,38 +1,47 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import Header from './Components/Header';
-import Welcome from './Components/Welcome';
-import Notification from './Components/Notification';
-import NavButton from './Components/Button';
-import Footer from './Components/Footer';
-import CustomSidebar from './Components/Sidebar';
-import { useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState,useContext } from 'react';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Home from './Screens/Home';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import Login from './Screens/Login';
+import Register from './Screens/Register';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthProvider,AuthContext } from './AuthProvider';
+
+const Stack = createNativeStackNavigator();
+
+const AppNavigator = () => {
+ const { user, loading } = useContext(AuthContext);
+
+ if (loading) {
+   return (
+     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+       <ActivityIndicator size="large" color="#0000ff" />
+     </View>
+   );
+ }
+
+ return (
+  <Stack.Navigator initialRouteName={user ? "Home" : "Login"} screenOptions={{headerShown : false}}> 
+   <Stack.Screen name="Home" component={Home} />
+   <Stack.Screen name="Login" component={Login} />
+   <Stack.Screen name="Register" component={Register} />
+ </Stack.Navigator>
+ );
+};
+
 
 export default function App() {
-  const [open,isOpen] = useState(false);
+  // const { user, setUser, loading } = useContext(AuthContext);
+  // console.log(user);
   return (
-   <View style={styles.container}>
-    <Header var={open} func={isOpen}/>
-    <CustomSidebar var={open} func={isOpen} />
-    <ScrollView contentContainerStyle={[styles.container,{justifyContent:'start',paddingBottom : 120}]}>
-      <Welcome/>
-      <Notification/>
-      <NavButton name="Class Updates" icon="📝" content="Receive timely notifications about class schedule changes, assignments, and instructor announcements." />
-      <NavButton name="Exam Alerts" icon="📊" content="Never miss an exam with reminders about upcoming tests, submission deadlines, and result announcements." />
-      <NavButton name="Campus Events" icon="🎭" content="Stay informed about campus activities, workshops, seminars, and cultural events happening around you." />
-      <StatusBar style="auto" />
-      <Footer />
-    </ScrollView>
-    
-   </View>
-  );
+   <AuthProvider>
+    <NavigationContainer>
+     <AppNavigator />
+   </NavigationContainer>
+   </AuthProvider>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f2f2f2',
-    alignItems: 'center',
-    justifyContent: 'start',
-    padding : 5,
-  },
-});
+

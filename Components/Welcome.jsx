@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 const Welcome = () => {
   return (
     <View style={styles.container}>
-     <Text style={styles.Topic}>Welcome, {'Gokul'}</Text>
+     <Text style={styles.Topic}>Welcome, {'Student'}</Text>
      <Text style={styles.content}>Stay connected with important updates and announcements.</Text>
     </View>
   )
